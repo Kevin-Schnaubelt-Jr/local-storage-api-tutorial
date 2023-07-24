@@ -1,0 +1,74 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#main-div {
+    flex-direction: column;
+}
+
+.label-div {
+    display: flex;
+}
+
+.building-div {
+    display: flex;
+}
+
+.building-name {
+    width: 5rem;
+}
+
+.building-number {
+    width: 2rem;
+}
+
+.building-doubles {
+    width: 2rem;
+}
+
+.building-cost {
+    width: 3.5rem;
+}
+
+.building-CpS {
+    width: 2rem;
+}
+
+.building-buy {
+    width: 2rem;
+}
+
+.building-upgrade {
+    width: 4rem;
+}
+
+#prod-div {
+    display: flex;
+}
+
+#prod-div > * {
+    width: 8rem;
+}
+
+.prod-milk {
+    width: 2rem;
+}
+
+.prod-flavor {
+    width: 1.75rem;
+}
+
+#prodUpgrade {
+    width: 4rem;
+}
+
+.kitten-div {
+    display: flex;
+    text-align: center;
+}
+
+.kitten-div > * {
+    width: 5rem;
+}

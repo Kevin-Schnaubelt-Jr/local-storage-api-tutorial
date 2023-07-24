@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookies!</title>
+    <!-- attach style.css -->
+    <link rel="stylesheet" href="style.css">
+    <!-- import main.js -->
+    <script src="main.js" defer></script>
+</head>
+<body>
+    <div id="main-div">
+        <div class="label-div">
+            <p class="building-name">Name</p>
+            <p class="building-number">#</p>
+            <p class="building-doubles">2X</p>
+            <p class="building-cost">Cost</p>
+            <p class="building-CpS">CpS</p>
+            <p class="building-buy">Buy</p>
+            <p class="building-upgrade">Upgrade</p>
+        </div>
+        <div class="building-div">
+            <p class="building-name">Cursor</p>
+            <input id="cursorNumber" class="building-number" type="text" />
+            <input id="cursorDoubles" class="building-doubles" type="text" />
+            <p id="cursorCost" class="building-cost">15</p>
+            <p id="cursorCpS" class="building-CpS">0.1</p>
+            <p id="cursorBuy" class="building-buy">0</p>
+            <input id="cursorUpgrade" class="building-upgrade" type="text">
+        </div>
+        <div>
+        <div class="building-div">
+            <p class="building-name">Grandma</p>
+            <input id="grandmaNumber" class="building-number" type="text" />
+            <input id="grandmaDoubles" class="building-doubles" type="text" />
+            <p id="grandmaCost" class="building-cost">100</p>
+            <p id="grandmaCpS" class="building-CpS">1</p>
+            <p id="grandmaBuy" class="building-buy">0</p>
+            <input id="grandmaUpgrade" class="building-upgrade" type="text">
+        </div>
+        <div class="building-div">
+            <p class="building-name">Farm</p>
+            <input id="farmNumber" class="building-number" type="text" />
+            <input id="farmDoubles" class="building-doubles" type="text" />
+            <p id="farmCost" class="building-cost">100</p>
+            <p id="farmCpS" class="building-CpS">1</p>
+            <p id="farmBuy" class="building-buy">0</p>
+            <input id="farmUpgrade" class="building-upgrade" type="text">
+        </div>
+        <div id="prod-div">
+            <p id="totalCpS">Total CpS: 0</p>
+            <p id="globalBoost">Prod Boost: 0</p>
+        </div>
+        <div class="label-div">
+            <p id="milk" class="prod-milk">Milk</p>
+            <p class="prod-flavor">1%</p>
+            <p class="prod-flavor">2%</p>
+            <p class="prod-flavor">3%</p>
+            <p class="prod-flavor">4%</p>
+            <p class="prod-flavor">5%</p>
+            <p class="prod-flavor">10%</p>
+        </div>
+        <div id="prodBoosts-div">
+            <input id="milkInput" class="prod-milk" type="text" placeholder="Milk">
+            <input id="input1" class="prod-flavor" type="text" placeholder="1%">
+            <input id="input2" class="prod-flavor" type="text" placeholder="2%">
+            <input id="input3" class="prod-flavor" type="text" placeholder="3%">
+            <input id="input4" class="prod-flavor" type="text" placeholder="4%">
+            <input id="input5" class="prod-flavor" type="text" placeholder="5%">
+            <input id="input10" class="prod-flavor" type="text" placeholder="10%">
+        </div>
+        <p>Prod Upgrade</p>
+        <div>
+            <input id="prodUpgrade" type="text" placeholder="Cost">
+            <input id="flavor1" type="radio" name="flavor" value="1%">1%</input>
+            <input id="flavor2" type="radio" name="flavor" value="2%">2%</input>
+            <input id="flavor3" type="radio" name="flavor" value="3%">3%</input>
+            <input id="flavor4" type="radio" name="flavor" value="4%">4%</input>
+            <input id="flavor5" type="radio" name="flavor" value="5%">5%</input>
+        </div>
+        <p>Kitten Types</p>
+        <div class="kitten-div">
+            <p>Helpers</p>
+            <p>Workers</p>
+            <p>Engineers</p>
+            <p>Overseers</p>
+        </div>
+        <div class="kitten-div">
+            <input id="kitten-helpers" type="checkbox" value="helpers">
+            <input id="kitten-workers" type="checkbox" value="workers">
+            <input id="kitten-engineers" type="checkbox" value="engineers">
+            <input id="kitten-overseers" type="checkbox" value="overseers">
+        </div>
+        <button onclick="clearStorage()">Clear Local Storage</button>
+    </div>
+</body>
+</html>
