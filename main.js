@@ -20,7 +20,7 @@ let gameState = JSON.parse(localStorage.getItem('gameState')) || {
         },
         milk: 0,
         kittens: {
-            "helpers": [true, 0.1],
+            "helpers": [false, 0.1],
             "workers": [false, 0.125],
             "engineers": [false, 0.15],
             "overseers": [false, 0.175],
