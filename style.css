@@ -41,15 +41,15 @@
 }
 
 .building-CpS {
-    width: 2rem;
+    width: 3.5rem;
 }
 
 .building-buy {
-    width: 2rem;
+    width: 3.5rem;
 }
 
 .building-upgrade {
-    width: 4rem;
+    width: 3.5rem;
 }
 
 #prod-div {
@@ -60,12 +60,21 @@
     width: 8rem;
 }
 
+#prodBoosts-div {
+    display: flex;
+}
+
 .prod-milk {
     width: 2rem;
+    margin-right: 0.5rem;
 }
 
 .prod-flavor {
     width: 1.75rem;
+    margin-right: 0.5rem;
+    /* border: 1px;
+    border-color: black;
+    border-style: solid; */
 }
 
 #prodUpgrade {
