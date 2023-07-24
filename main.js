@@ -72,8 +72,98 @@ let gameState = JSON.parse(localStorage.getItem('gameState')) || {
             grandmaBoosted: false,
             grandmaBoost: 1,
         },
-    },
-}
+        Mine: {
+            name: 'Mine',
+            amount: 0,
+            baseCost: 12000,
+            baseReturn: 47,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 2,
+        },
+        Factory: {
+            name: 'Factory',
+            amount: 0,
+            baseCost: 130000,
+            baseReturn: 260,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 3,
+        },
+        Bank: {
+            name: 'Bank',
+            amount: 0,
+            baseCost: 1400000,
+            baseReturn: 1400,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 4,
+        },
+        Temple: {
+            name: 'Temple',
+            amount: 0,
+            baseCost: 20000000,
+            baseReturn: 7800,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 5,
+        },
+        WizardTower: {
+            name: 'WizardTower',
+            amount: 0,
+            baseCost: 330000000,
+            baseReturn: 44000,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 6,
+        },
+        Shipment: {
+            name: 'Shipment',
+            amount: 0,
+            baseCost: 5100000000,
+            baseReturn: 260000,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 7,
+        },
+        AlchemyLab: {
+            name: 'AlchemyLab',
+            amount: 0,
+            baseCost: 75000000000,
+            baseReturn: 1600000,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 8,
+        },
+        Portal: {
+            name: 'Portal',
+            amount: 0,
+            baseCost: 1000000000000,
+            baseReturn: 10000000,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 9,
+        },
+        TimeMachine: {
+            name: 'TimeMachine',
+            amount: 0,
+            baseCost: 14000000000000,
+            baseReturn: 65000000,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 10,
+        },
+    }
+};
 
 // Create empty object for storing adjusted buildings
 let adjustedBuildings = {};
@@ -119,7 +209,6 @@ function CalcGlobalBoost() {
             nonCursorBuildingTotal += gameState.buildings[building].amount;
         }
     }
-    console.log("non cursor total", nonCursorBuildingTotal);
 }
 
 function AdjustBuildings() {
@@ -134,10 +223,7 @@ function AdjustBuildings() {
         let grandmaBoost = gameState.buildings[building].grandmaBoost ?? null;
 
         let currentFinger = gameState.buildings[building].currentFinger ?? false;
-        console.log("current finger", currentFinger);
         let fingerBoost = currentFinger ? gameState.buildings[building].fingers[currentFinger] : false;
-        console.log("finger boost", fingerBoost);
-        console.log("finger total", currentFinger ? fingerBoost * nonCursorBuildingTotal : 0);
 
         let cps = ((baseReturn * (doubles ? 2**doubles : 1) * (grandmaBoosted ? 1 + 0.01 * (grandmaTotal/grandmaBoost) : 1)) + (currentFinger ? fingerBoost * nonCursorBuildingTotal : 0)) * globalBoost;
 
@@ -245,7 +331,7 @@ function Display() {
             document.getElementById(`${building.name.toLowerCase()}GrandmaBoost`).checked = building.grandmaBoosted;
         }
         document.getElementById(`${building.name.toLowerCase()}Doubles`).value = building.doubles;
-        document.getElementById(`${building.name.toLowerCase()}Cost`).innerHTML = formatValue(building.totalCost, 2, true);
+        document.getElementById(`${building.name.toLowerCase()}Cost`).innerHTML = formatValue(building.totalCost, 1, true);
         document.getElementById(`${building.name.toLowerCase()}CpS`).innerHTML = formatValue(building.cps, 1);
         document.getElementById(`${building.name.toLowerCase()}Buy`).innerHTML = formatValue(building.buyEfficiency, 2, true);
         document.getElementById(`${building.name.toLowerCase()}Upgrade`).placeholder = building.upgradeEfficiency ? formatValue(building.upgradeEfficiency, 2) : 'Upgrade';
