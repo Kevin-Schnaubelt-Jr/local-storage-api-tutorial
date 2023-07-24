@@ -50,6 +50,8 @@ let gameState = JSON.parse(localStorage.getItem('gameState')) || {
             baseReturn: 8,
             doubles: 0,
             upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 1,
         },
     },
 }
@@ -59,6 +61,7 @@ let adjustedBuildings = {};
 let globalBoost = 1;
 let totalcps = 0;
 let prodUpgradeEfficiency = 0;
+let grandmaTotal = 0;
 
 window.onload = function() {
     GoActionGo();
@@ -89,6 +92,9 @@ function CalcGlobalBoost() {
     let kittenBoost = (helper ? 1 + milk * helper: 1) * (worker ? 1 + milk * worker: 1) * (engineer ? 1 + milk * engineer: 1) * (overseer ? 1 + milk * overseer: 1);
 
     globalBoost = flavors * kittenBoost;
+
+    grandmaTotal = gameState.buildings.Grandma.amount;
+    console.log(grandmaTotal);
 }
 
 function AdjustBuildings() {
@@ -98,7 +104,9 @@ function AdjustBuildings() {
         let baseReturn = gameState.buildings[building].baseReturn;
         let doubles = gameState.buildings[building].doubles;
         let upgradeCost = gameState.buildings[building].upgradeCost;
-        let cps = baseReturn * (doubles ? 2**doubles : 1) * globalBoost;
+        let grandmaBoosted = gameState.buildings[building].grandmaBoosted ? gameState.buildings[building].grandmaBoosted : false;
+        let grandmaBoost = gameState.buildings[building].grandmaBoost ? gameState.buildings[building].grandmaBoost : 0;
+        let cps = baseReturn * (doubles ? 2**doubles : 1) * (gameState.buildings[building].grandmaBoosted ? 1 + 0.01 * (grandmaTotal/grandmaBoost) : 1) * globalBoost;
 
         adjustedBuildings[building] = {
             name: building,
@@ -107,6 +115,7 @@ function AdjustBuildings() {
             totalCost: amount ? baseCost * 1.15**amount : baseCost,
             cps: cps,
             upgradeCost: upgradeCost,
+            grandmaBoosted: grandmaBoosted,
         }
         // Add building's cps to totalcps
         totalcps += cps * amount;
@@ -160,6 +169,10 @@ function Display() {
         let building = adjustedBuildings[buildingKey];
 
         document.getElementById(`${building.name.toLowerCase()}Number`).value = building.amount;
+        if (document.getElementById(`${building.name.toLowerCase()}GrandmaBoost`)) {
+            console.log(building.grandmaBoosted);
+            document.getElementById(`${building.name.toLowerCase()}GrandmaBoost`).checked = building.grandmaBoosted;
+        }
         document.getElementById(`${building.name.toLowerCase()}Doubles`).value = building.doubles;
         document.getElementById(`${building.name.toLowerCase()}Cost`).innerHTML = formatValue(building.totalCost, 2, true);
         document.getElementById(`${building.name.toLowerCase()}CpS`).innerHTML = formatValue(building.cps, 1);
@@ -209,6 +222,7 @@ function addEventListeners() {
         let amountInput = document.getElementById(`${building.name.toLowerCase()}Number`);
         let doublesInput = document.getElementById(`${building.name.toLowerCase()}Doubles`);
         let upgradeInput = document.getElementById(`${building.name.toLowerCase()}Upgrade`);
+        let grandmaBoostInput = document.getElementById(`${building.name.toLowerCase()}GrandmaBoost`);
 
         // Add event listener for 'keyup' event
         [amountInput, doublesInput, upgradeInput].forEach(inputElement => {
@@ -238,6 +252,20 @@ function addEventListeners() {
                 });
             }
         });
+
+        // Add event listener for 'change' event on grandmaBoost checkbox
+        if (grandmaBoostInput) {
+            grandmaBoostInput.addEventListener('change', () => {
+                // Update grandmaBoosted in gameState
+                gameState.buildings[buildingKey].grandmaBoosted = grandmaBoostInput.checked;
+                
+                // Save to local storage
+                localStorage.setItem('gameState', JSON.stringify(gameState));
+
+                // Recalculate
+                GoActionGo();
+            });
+        }
     }
 
     // For the milk
@@ -340,6 +368,7 @@ function GoActionGo() {
     globalBoost = 1;
     totalcps = 0;
     prodUpgradeEfficiency = 0;
+    grandmaTotal = 0;
 
     CalcGlobalBoost();
     AdjustBuildings();

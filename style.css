@@ -19,7 +19,13 @@
 }
 
 .building-name {
+    display: flex;
+    justify-content: space-between;
     width: 5rem;
+}
+
+.building-grandma-boost {
+    margin-right: 0.3rem;
 }
 
 .building-number {
