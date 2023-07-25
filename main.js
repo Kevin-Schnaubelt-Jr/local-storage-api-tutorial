@@ -399,7 +399,6 @@ function CalculateBuyEfficiency() {
         return a.buyEfficiency - b.buyEfficiency;
     });
 
-    console.log("efficiencies", efficiencies);
 }
 
 
@@ -784,7 +783,7 @@ function prodUpgradeEvent() {
         prodUpgradeInput.addEventListener('keyup', (event) => {
             // Check for 'Enter' key
             if (event.key === 'Enter') {
-                gameState.prodBoosts.prodUpgrade.upgradeCost = parseInt(prodUpgradeInput.value, 10);
+                gameState.prodBoosts.prodUpgrade.upgradeCost = parseValue(prodUpgradeInput.value, 10);
                 prodUpgradeInput.value = '';
 
                 // Check which radio button is checked
