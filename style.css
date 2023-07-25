@@ -50,19 +50,22 @@ select {
 } */
 
 .building-CpS {
-    width: 5rem;
+    width: 4rem;
     margin-left: 0.2rem;
-    margin-right: 0.1rem;
 }
 
 .building-buy {
-    width: 4.3rem;
+    width: 4rem;
     margin-left: 0.1rem;
-    margin-right: 0.2rem;
 }
 
 .best-buy {
+    width: 5.4rem;
     margin-left: 0.1rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+ 
 }
 
 .building-upgrade {
