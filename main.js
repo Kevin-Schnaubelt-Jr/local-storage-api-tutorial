@@ -232,7 +232,6 @@ let luckyValue = 0;
 
 window.onload = function() {
     GoActionGo();
-    addEventListeners();
     // Other onload tasks...
     console.log("adjusted", adjustedBuildings);
     console.log("gamestate", gameState);
@@ -394,8 +393,8 @@ function Display() {
         }
         document.getElementById(`${building.name.toLowerCase()}Doubles`).value = building.doubles;
         document.getElementById(`${building.name.toLowerCase()}Cost`).innerHTML = formatValue(building.totalCost, 0, true);
-        document.getElementById(`${building.name.toLowerCase()}CpS`).innerHTML = formatValue(building.cps, 1);
-        document.getElementById(`${building.name.toLowerCase()}Buy`).innerHTML = formatValue(building.buyEfficiency, 2, true);
+        document.getElementById(`${building.name.toLowerCase()}CpS`).innerHTML = formatValue(building.cps, 1, false, false, true);
+        document.getElementById(`${building.name.toLowerCase()}Buy`).innerHTML = formatValue(building.buyEfficiency, 2, false, true);
         document.getElementById(`${building.name.toLowerCase()}Upgrade`).placeholder = building.upgradeEfficiency ? formatValue(building.upgradeEfficiency, 2) : 'Upgrade';
         if (document.getElementById(`${building.name.toLowerCase()}GrandmaUpgrade`)) {
             document.getElementById(`${building.name.toLowerCase()}GrandmaUpgrade`).placeholder = building.upgradeGrandmaEfficiency ? formatValue(building.upgradeGrandmaEfficiency, 2) : 'Upgrade';
@@ -721,9 +720,17 @@ function KittenEvent() {
     });
 }
 
-function formatValue(num, decimals = 2, isCost = false) {
+function formatValue(num, decimals = 2, isCost = false, isBuyNumber = false, roundUp = false) {
     let factor = Math.pow(10, decimals);
-    num = isCost ? Math.ceil(num) : Math.floor(num * factor) / factor;
+    if (roundUp) {
+        num = Math.ceil(num * factor) / factor;
+    } else if (isBuyNumber) {
+        num = Math.floor(num);
+    } else if (isCost) {
+        num = Math.ceil(num);
+    } else {
+        num = Math.floor(num * factor) / factor;
+    }
 
     if (num >= 1e24) {
         return (num / 1e24).toFixed(decimals) + 'Spt';
@@ -750,8 +757,11 @@ function formatValue(num, decimals = 2, isCost = false) {
         return (num / 1e3).toFixed(decimals) + 'K';
     }
 
-    return isCost ? num.toFixed(0) : num.toFixed(decimals);
+    return num.toFixed(isCost || isBuyNumber ? 0 : decimals);
 }
+
+
+
 
 
 function GoActionGo() {
@@ -761,12 +771,14 @@ function GoActionGo() {
     prodUpgradeEfficiency = 0;
     grandmaTotal = 0;
     nonCursorBuildingTotal = 0;
+    luckyValue = 0;
 
     CalcGlobalBoost();
     AdjustBuildings();
     CalculateBuyEfficiency();
     CalculateProdUpgradeEfficiency();
     Display();
+    addEventListeners();
 }
 
 function clearStorage() {
