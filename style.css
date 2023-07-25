@@ -51,14 +51,18 @@ select {
 
 .building-CpS {
     width: 3.5rem;
+    margin-left: 0.2rem;
+    margin-right: 0.1rem;
 }
 
 .building-buy {
     width: 3.5rem;
+    margin-left: 0.1rem;
+    margin-right: 0.2rem;
 }
 
 .building-upgrade {
-    width: 3.5rem;
+    width: 4.3rem;
 }
 
 .lucky-radio {
@@ -94,7 +98,7 @@ select {
 }
 
 #prodUpgrade {
-    width: 4rem;
+    width: 4.3rem;
 }
 
 .kitten-div {
