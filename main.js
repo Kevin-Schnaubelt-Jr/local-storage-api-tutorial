@@ -25,8 +25,12 @@ let gameState = JSON.parse(localStorage.getItem('gameState')) || {
             "engineers": [false, 0.15],
             "overseers": [false, 0.175],
         },
+        prestige: {
+            prestigeNumber: 408,
+            prestigeUpgrade: 0.05,
+        }
     },
-    lucky: 42000,
+    lucky: 6000,
     buildings: {
         Cursor: {
             name: 'Cursor',
@@ -202,9 +206,13 @@ function CalcGlobalBoost() {
     let engineer = gameState.prodBoosts.kittens.engineers[0] ? gameState.prodBoosts.kittens.engineers[1] : 0;
     let overseer = gameState.prodBoosts.kittens.overseers[0] ? gameState.prodBoosts.kittens.overseers[1] : 0;
 
+    let prestigeNumber = gameState.prodBoosts.prestige.prestigeNumber;
+    let prestigeUpgrade = gameState.prodBoosts.prestige.prestigeUpgrade;
+    let prestigeBoost = prestigeNumber ? 1 + 0.01 * prestigeNumber * prestigeUpgrade : 1;
+
     let kittenBoost = (helper ? 1 + milk * helper: 1) * (worker ? 1 + milk * worker: 1) * (engineer ? 1 + milk * engineer: 1) * (overseer ? 1 + milk * overseer: 1);
 
-    globalBoost = flavors * kittenBoost;
+    globalBoost = flavors * kittenBoost * prestigeBoost;
 
     grandmaTotal = gameState.buildings.Grandma.amount;
     for (let building in gameState.buildings) {
@@ -386,6 +394,14 @@ function Display() {
             document.getElementById(`kitten-${kittenType}`).checked = false;
         }
     }
+
+    document.getElementById('prestigeNumber').placeholder = gameState.prodBoosts.prestige.prestigeNumber ? gameState.prodBoosts.prestige.prestigeNumber : 'Prestige';
+    let prestigeRadials = document.getElementsByName('prestige');
+    for (let i = 0; i < prestigeRadials.length; i++) {
+        if (prestigeRadials[i].value == gameState.prodBoosts.prestige.prestigeUpgrade) {
+            prestigeRadials[i].checked = true;
+        }
+    }
 }
 
 function addEventListeners() {
@@ -412,9 +428,42 @@ function addEventListeners() {
     // For the kittens
     KittenEvent();
 
+    // For the prestige
+    PrestigeEvent();
+
 
     
 }
+
+function PrestigeEvent() {
+    let prestigeNumberInput = document.getElementById('prestigeNumber');
+    if (prestigeNumberInput) {
+        prestigeNumberInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                gameState.prodBoosts.prestige.prestigeNumber = parseInt(prestigeNumberInput.value, 10);
+                prestigeNumberInput.value = '';
+                localStorage.setItem('gameState', JSON.stringify(gameState));
+                GoActionGo();
+                event.target.blur();
+            }
+        });
+    }
+
+    let prestigeRadios = document.querySelectorAll('input[name="prestige"]');
+    prestigeRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            // Update gameState.prestigeUpgrade with selected radio value
+            gameState.prodBoosts.prestige.prestigeUpgrade = parseFloat(radio.value);
+
+            // Save to local storage
+            localStorage.setItem('gameState', JSON.stringify(gameState));
+
+            // Recalculate
+            GoActionGo();
+        });
+    });
+}
+            
 
 function LuckyEvent() {
     // Get all radio inputs with name 'lucky'

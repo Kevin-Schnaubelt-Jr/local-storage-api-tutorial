@@ -98,3 +98,32 @@
 .kitten-div > * {
     width: 5rem;
 }
+
+#prestige-div {
+    margin-top: 0.5rem;
+    /* border: 1px;
+    border-color: black;
+    border-style: solid; */
+}
+
+#prestigeNumber {
+    width: 5rem;
+    /* border: 1px;
+    border-color: black;
+    border-style: solid; */
+}
+
+#prestige-radios {
+    display: flex;
+    justify-content: space-between;
+    /* border: 1px;
+    border-color: black;
+    border-style: solid; */
+    width: 16rem;
+}
+
+#local-storage-controls-div {
+    display: flex;
+    justify-content: center;
+    margin-top: 9rem;
+}

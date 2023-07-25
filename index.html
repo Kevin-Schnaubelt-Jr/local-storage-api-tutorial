@@ -205,7 +205,7 @@
         </div>
         <p>Prod Upgrade</p>
         <div>
-            <input id="prodUpgrade" type="text" placeholder="Cost" enterkeyhint="done">
+            <input id="prodUpgrade" type="text" enterkeyhint="done">
             <input id="flavor1" type="radio" name="flavor" value="1%">1%</input>
             <input id="flavor2" type="radio" name="flavor" value="2%">2%</input>
             <input id="flavor3" type="radio" name="flavor" value="3%">3%</input>
@@ -225,8 +225,20 @@
             <input id="kitten-engineers" type="checkbox" value="engineers">
             <input id="kitten-overseers" type="checkbox" value="overseers">
         </div>
-        <br>
-        <button onclick="clearStorage()">Clear Local Storage</button>
+        <div id="prestige-div">
+            <p>Prestige</p>
+            <input id="prestigeNumber" type="text" placeholder="Prestige" enterkeyhint="done">
+            <div id="prestige-radios" class="label-div">
+                <input id="prestigeUpgrade1" type="radio" name="prestige" value="0.05">5%</input>
+                <input id="prestigeUpgrade2" type="radio" name="prestige" value="0.25">25%</input>
+                <input id="prestigeUpgrade3" type="radio" name="prestige" value="0.5">50%</input>
+                <input id="prestigeUpgrade4" type="radio" name="prestige" value="0.75">75%</input>
+                <input id="prestigeUpgrade5" type="radio" name="prestige" value="1">100%</input>
+            </div>
+        </div>
+        <div id="local-storage-controls-div" >
+            <button class="local-storage-button" onclick="clearStorage()">Clear Local Storage</button>
+        </div>
     </div>
 </body>
 </html>
