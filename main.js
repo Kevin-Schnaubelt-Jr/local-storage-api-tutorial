@@ -417,12 +417,12 @@ function Display() {
     }
 
     document.getElementById('milkInput').placeholder = gameState.prodBoosts.milk ? gameState.prodBoosts.milk : 'Milk';
-    document.getElementById('input1').placeholder = gameState.prodBoosts.flavors["1%"] ? gameState.prodBoosts.flavors["1%"] : '1%';
-    document.getElementById('input2').placeholder = gameState.prodBoosts.flavors["2%"] ? gameState.prodBoosts.flavors["2%"] : '2%';
-    document.getElementById('input3').placeholder = gameState.prodBoosts.flavors["3%"] ? gameState.prodBoosts.flavors["3%"] : '3%';
-    document.getElementById('input4').placeholder = gameState.prodBoosts.flavors["4%"] ? gameState.prodBoosts.flavors["4%"] : '4%';
-    document.getElementById('input5').placeholder = gameState.prodBoosts.flavors["5%"] ? gameState.prodBoosts.flavors["5%"] : '5%';
-    document.getElementById('input10').placeholder = gameState.prodBoosts.flavors["10%"] ? gameState.prodBoosts.flavors["10%"] : '10%';
+    document.getElementById('input1').value = gameState.prodBoosts.flavors["1%"] ? gameState.prodBoosts.flavors["1%"] : '1%';
+    document.getElementById('input2').value = gameState.prodBoosts.flavors["2%"] ? gameState.prodBoosts.flavors["2%"] : '2%';
+    document.getElementById('input3').value = gameState.prodBoosts.flavors["3%"] ? gameState.prodBoosts.flavors["3%"] : '3%';
+    document.getElementById('input4').value = gameState.prodBoosts.flavors["4%"] ? gameState.prodBoosts.flavors["4%"] : '4%';
+    document.getElementById('input5').value = gameState.prodBoosts.flavors["5%"] ? gameState.prodBoosts.flavors["5%"] : '5%';
+    document.getElementById('input10').value = gameState.prodBoosts.flavors["10%"] ? gameState.prodBoosts.flavors["10%"] : '10%';
 
     document.getElementById('prodUpgrade').placeholder = gameState.prodBoosts.prodUpgrade.upgradeCost ? formatValue(prodUpgradeEfficiency) : 'Upgrade';
     for(let flavor in gameState.prodBoosts.prodUpgrade.upgradePercents){
@@ -662,14 +662,13 @@ function MilkEvent() {
 }
 
 function FlavorsEvent() {
-    for (let i = 1; i <= 10; i += (i < 6) ? 1 : 5) {
+    for (let i = 1; i <= 10; i = (i < 5) ? i + 1 : i + 5) {
         let flavorInput = document.getElementById(`input${i}`);
         if (flavorInput) {
             flavorInput.addEventListener('keyup', (event) => {
                 if (event.key === 'Enter') {
                     gameState.prodBoosts.flavors[`${i}%`] = parseInt(flavorInput.value, 10);
                     localStorage.setItem('gameState', JSON.stringify(gameState));
-                    flavorInput.value = '';
                     GoActionGo();
                     event.target.blur();
                 }
