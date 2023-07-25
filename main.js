@@ -167,6 +167,56 @@ let gameState = JSON.parse(localStorage.getItem('gameState')) || {
             grandmaBoosted: false,
             grandmaBoost: 10,
         },
+        Antimatter: {
+            name: 'Antimatter',
+            amount: 0,
+            baseCost: 170000000000000,
+            baseReturn: 430000000,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 11,
+        },
+        Prism: {
+            name: 'Prism',
+            amount: 0,
+            baseCost: 2100000000000000,
+            baseReturn: 2900000000,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 12,
+        },
+        Chancemaker: {
+            name: 'Chancemaker',
+            amount: 0,
+            baseCost: 26000000000000000,
+            baseReturn: 21000000000,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 13,
+        },
+        Fractal: {
+            name: 'Fractal',
+            amount: 0,
+            baseCost: 310000000000000000,
+            baseReturn: 150000000000,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 14,
+        },
+        Javascript: {
+            name: 'Javascript',
+            amount: 0,
+            baseCost: 7100000000000000000,
+            baseReturn: 1100000000000,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 15,
+        },
     }
 };
 
@@ -675,6 +725,18 @@ function formatValue(num, decimals = 2, isCost = false) {
     let factor = Math.pow(10, decimals);
     num = isCost ? Math.ceil(num) : Math.floor(num * factor) / factor;
 
+    if (num >= 1e24) {
+        return (num / 1e24).toFixed(decimals) + 'Spt';
+    }
+    if (num >= 1e21) {
+        return (num / 1e21).toFixed(decimals) + 'Sx';
+    }
+    if (num >= 1e18) {
+        return (num / 1e18).toFixed(decimals) + 'Qt';
+    }
+    if (num >= 1e15) {
+        return (num / 1e15).toFixed(decimals) + 'Qd';
+    }
     if (num >= 1e12) {
         return (num / 1e12).toFixed(decimals) + 'T';
     }
@@ -690,6 +752,7 @@ function formatValue(num, decimals = 2, isCost = false) {
 
     return isCost ? num.toFixed(0) : num.toFixed(decimals);
 }
+
 
 function GoActionGo() {
     adjustedBuildings = {};
