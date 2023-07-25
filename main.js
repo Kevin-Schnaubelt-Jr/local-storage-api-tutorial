@@ -26,6 +26,7 @@ let gameState = JSON.parse(localStorage.getItem('gameState')) || {
             "overseers": [false, 0.175],
         },
     },
+    lucky: 42000,
     buildings: {
         Cursor: {
             name: 'Cursor',
@@ -172,6 +173,8 @@ let totalcps = 0;
 let prodUpgradeEfficiency = 0;
 let grandmaTotal = 0;
 let nonCursorBuildingTotal = 0;
+let luckyValue = 0;
+
 
 window.onload = function() {
     GoActionGo();
@@ -258,6 +261,7 @@ function AdjustBuildings() {
         // Add building's cps to totalcps
         totalcps += cps * amount;
     }
+    luckyValue = totalcps * gameState.lucky;
 }
 
 function CalculateBuyEfficiency() {
@@ -342,7 +346,17 @@ function Display() {
     }
 
     document.getElementById('totalCpS').innerHTML = `Total CpS: ${formatValue(totalcps, 1)}`;
-    document.getElementById('globalBoost').innerHTML = `Global Boost: ${formatValue(globalBoost, 2)}`;
+    document.getElementById('globalBoost').innerHTML = `Multiplier: ${formatValue(globalBoost, 2)}`;
+    document.getElementById('luckyValue').innerHTML = `Lucky: ${formatValue(luckyValue, 2)}`;
+    // get all radials with name lucky
+    let luckyRadials = document.getElementsByName('lucky');
+    // loop through all radials
+    for (let i = 0; i < luckyRadials.length; i++) {
+        // if the value of the radial is equal to the lucky value, check it
+        if (luckyRadials[i].value == gameState.lucky) {
+            luckyRadials[i].checked = true;
+        }
+    }
 
     document.getElementById('milkInput').placeholder = gameState.prodBoosts.milk ? gameState.prodBoosts.milk : 'Milk';
     document.getElementById('input1').placeholder = gameState.prodBoosts.flavors["1%"] ? gameState.prodBoosts.flavors["1%"] : '1%';
@@ -357,7 +371,6 @@ function Display() {
         // Check if this flavor is currently activated (first item in array is true)
         if(gameState.prodBoosts.prodUpgrade.upgradePercents[flavor][0]){
             // Get the radio button element for this flavor and set it to checked
-            // Note: assumes that your radio button ids follow the "flavor<number>" pattern
             let flavorNumber = flavor.replace("%", ""); // remove the % sign to get the number
             document.getElementById(`flavor${flavorNumber}`).checked = true;
         }
@@ -380,7 +393,49 @@ function addEventListeners() {
     BuildingsEvent();
 
     // For the finger
-    // Get the select element by id
+    FingerEvent();
+
+
+    // For the milk
+    MilkEvent();
+
+    // For the flavors
+    FlavorsEvent();
+
+    // For the prodUpgrade
+    prodUpgradeEvent();
+
+    // For the lucky
+    LuckyEvent();
+
+
+    // For the kittens
+    KittenEvent();
+
+
+    
+}
+
+function LuckyEvent() {
+    // Get all radio inputs with name 'lucky'
+    let luckyRadios = document.querySelectorAll('input[name="lucky"]');
+
+    // Add event listener for 'change' event to each radio input
+    luckyRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            // Update gameState.lucky with selected radio value
+            gameState.lucky = parseInt(radio.value, 10);
+
+            // Save to local storage
+            localStorage.setItem('gameState', JSON.stringify(gameState));
+
+            // Recalculate
+            GoActionGo();
+        });
+    });
+}
+
+function FingerEvent() {
     let fingerNamesSelect = document.getElementById('finger-names');
 
     // Add event listener for 'change' event
@@ -397,22 +452,6 @@ function addEventListeners() {
         // Recalculate
         GoActionGo();
     });
-
-
-    // For the milk
-    MilkEvent();
-
-    // For the flavors
-    FlavorsEvent();
-
-    // For the prodUpgrade
-    prodUpgradeEvent();
-
-    // For the kittens
-    KittenEvent();
-
-
-    
 }
 
 function BuildingsEvent() {
