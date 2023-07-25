@@ -32,6 +32,13 @@ let gameState = JSON.parse(localStorage.getItem('gameState')) || {
         heralds: 0,
     },
     lucky: 6000,
+    grandmapocalyseState: "Grandma",
+    grandmapocalyse: {
+        "Grandma": 0,
+        "One Mind": 0.02,
+        "Communal Brainsweep": 0.04,
+        "Elder Pact": 0.04,
+    },
     buildings: {
         Cursor: {
             name: 'Cursor',
@@ -227,6 +234,7 @@ let globalBoost = 1;
 let totalcps = 0;
 let prodUpgradeEfficiency = 0;
 let grandmaTotal = 0;
+let portalTotal = 0;
 let nonCursorBuildingTotal = 0;
 let luckyValue = 0;
 
@@ -268,6 +276,7 @@ function CalcGlobalBoost() {
     globalBoost = flavors * kittenBoost * prestigeBoost * heralds;
 
     grandmaTotal = gameState.buildings.Grandma.amount;
+    portalTotal = gameState.buildings.Portal.amount;
     for (let building in gameState.buildings) {
         if (building !== 'Cursor') {
             nonCursorBuildingTotal += gameState.buildings[building].amount;
@@ -289,7 +298,18 @@ function AdjustBuildings() {
         let currentFinger = gameState.buildings[building].currentFinger ?? false;
         let fingerBoost = currentFinger ? gameState.buildings[building].fingers[currentFinger] : false;
 
-        let cps = ((baseReturn * (doubles ? 2**doubles : 1) * (grandmaBoosted ? 1 + 0.01 * (grandmaTotal/grandmaBoost) : 1)) + (currentFinger ? fingerBoost * nonCursorBuildingTotal : 0)) * globalBoost;
+        let grandmapocalyseState = gameState.grandmapocalyseState;
+        let grandmapocalyseBoost = 0;
+        if (building === 'Grandma') {
+            if (grandmapocalyseState !== 'Elder Pact') {
+            grandmapocalyseBoost = gameState.grandmapocalyse[grandmapocalyseState] * grandmaTotal;
+            } else {
+            grandmapocalyseBoost = gameState.grandmapocalyse[grandmapocalyseState] * grandmaTotal + 0.05 * portalTotal;
+            }
+        }
+
+        let cps = (((baseReturn + grandmapocalyseBoost) * (doubles ? 2**doubles : 1) * (grandmaBoosted ? 1 + 0.01 * (grandmaTotal/grandmaBoost) : 1)) + (currentFinger ? fingerBoost * nonCursorBuildingTotal : 0)) * globalBoost;
+
 
         let upgradeGrandmaCost = gameState.buildings[building].upgradeGrandmaCost ?? null;
         let upgradeGrandmaType = gameState.buildings[building].upgradeGrandmaType ?? null;
@@ -389,6 +409,10 @@ function Display() {
 
         if (building.name === 'Cursor') {
             document.getElementById('finger-names').value = building.currentFinger;
+        }
+
+        if (building.name === 'Grandma') {
+            document.getElementById('grandma-names').value = gameState.grandmapocalyseState;
         }
 
         document.getElementById(`${building.name.toLowerCase()}Number`).value = building.amount;
@@ -564,6 +588,22 @@ function FingerEvent() {
 
         // Update currentFinger in gameState for Cursor
         gameState.buildings['Cursor'].currentFinger = selectedFinger;
+
+        // Save to local storage
+        localStorage.setItem('gameState', JSON.stringify(gameState));
+
+        // Recalculate
+        GoActionGo();
+    });
+
+    let grandmaNamesSelect = document.getElementById('grandma-names');
+    // Add event listener for 'change' event
+    grandmaNamesSelect.addEventListener('change', () => {
+        // Get selected option value
+        let selectedGrandma = grandmaNamesSelect.value;
+
+        // Update grandmapocalyseState in gameState for Grandma
+        gameState.grandmapocalyseState = selectedGrandma;
 
         // Save to local storage
         localStorage.setItem('gameState', JSON.stringify(gameState));
@@ -790,6 +830,7 @@ function GoActionGo() {
     totalcps = 0;
     prodUpgradeEfficiency = 0;
     grandmaTotal = 0;
+    portalTotal = 0;
     nonCursorBuildingTotal = 0;
     luckyValue = 0;
 

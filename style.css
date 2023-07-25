@@ -6,6 +6,13 @@
     font-size: small;
 }
 
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
+  }
+
 #main-div {
     flex-direction: column;
     padding-top: 0.5rem;
@@ -125,8 +132,8 @@
 #local-storage-controls-div {
     display: flex;
     justify-content: center;
-    margin-top: 9rem;
-    margin-bottom: 10rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 #heralds {
