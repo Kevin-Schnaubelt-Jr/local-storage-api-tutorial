@@ -219,12 +219,32 @@ let gameState = JSON.parse(localStorage.getItem('gameState')) || {
         Javascript: {
             name: 'Javascript',
             amount: 0,
-            baseCost: 7100000000000000000,
+            baseCost: 71000000000000000000,
             baseReturn: 1100000000000,
             doubles: 0,
             upgradeCost: 0,
             grandmaBoosted: false,
             grandmaBoost: 15,
+        },
+        Idleverse: {
+            name: 'Idleverse',
+            amount: 0,
+            baseCost: 12000000000000000000000,
+            baseReturn: 8300000000000,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 16,
+        },
+        Cortex: {
+            name: 'Cortex',
+            amount: 0,
+            baseCost: 1900000000000000000000000,
+            baseReturn: 64000000000000,
+            doubles: 0,
+            upgradeCost: 0,
+            grandmaBoosted: false,
+            grandmaBoost: 17,
         },
     }
 };
@@ -238,6 +258,7 @@ let grandmaTotal = 0;
 let portalTotal = 0;
 let nonCursorBuildingTotal = 0;
 let luckyValue = 0;
+let efficiencies = [];
 
 
 window.onload = function() {
@@ -347,14 +368,12 @@ function AdjustBuildings() {
     luckyValue = totalcps * gameState.lucky;
 }
 
-function CalculateBuyEfficiency() {
+function CalculateBuyEfficiency() {   
     for (let building in adjustedBuildings) {
         let cost = adjustedBuildings[building].totalCost;
         let cpsIncrease = adjustedBuildings[building].cps;
-
         let amount = adjustedBuildings[building].amount;
         let upgradeCost = adjustedBuildings[building].upgradeCost;
-
         let upgradeGrandmaCost = adjustedBuildings[building].upgradeGrandmaCost ?? null;
         let upgradeGrandmaType = adjustedBuildings[building].upgradeGrandmaType ?? null;
 
@@ -368,8 +387,22 @@ function CalculateBuyEfficiency() {
             adjustedBuildings[building].upgradeGrandmaEfficiency = UpgradeGrandmaEfficiency(upgradeGrandmaCost, cpsIncrease, upgradeGrandmaType, totalcps);
         }
 
+        // Create an object with the building's name and efficiency, and add it to the array
+        efficiencies.push({
+            name: building,
+            buyEfficiency: adjustedBuildings[building].buyEfficiency,
+        });
     }
+
+    // Sort the array by the efficiency values, from lowest to highest
+    efficiencies.sort((a, b) => {
+        return a.buyEfficiency - b.buyEfficiency;
+    });
+
+    console.log("efficiencies", efficiencies);
 }
+
+
 
 function BuyEfficiency(cost, totalcps, cpsIncrease){
     let waitTime = totalcps ? cost / totalcps : 0;
@@ -423,7 +456,7 @@ function Display() {
         }
         document.getElementById(`${building.name.toLowerCase()}Doubles`).value = building.doubles;
         // document.getElementById(`${building.name.toLowerCase()}Cost`).innerHTML = formatValue(building.totalCost, 0, true);
-        document.getElementById(`${building.name.toLowerCase()}CpS`).innerHTML = formatValue(building.cps, 1, false, false, true);
+        document.getElementById(`${building.name.toLowerCase()}CpS`).innerHTML = formatValue(building.cps, 3, false, true, true);
         document.getElementById(`${building.name.toLowerCase()}Buy`).innerHTML = formatValue(building.buyEfficiency, 2, false, true);
         document.getElementById(`${building.name.toLowerCase()}Upgrade`).placeholder = building.upgradeEfficiency ? formatValue(building.upgradeEfficiency, 2) : 'Upgrade';
         if (document.getElementById(`${building.name.toLowerCase()}GrandmaUpgrade`)) {
@@ -432,9 +465,9 @@ function Display() {
         }
     }
 
-    document.getElementById('totalCpS').innerHTML = `Total CpS: ${formatValue(totalcps, 1)}`;
-    document.getElementById('globalBoost').innerHTML = `Multiplier: ${formatValue(globalBoost, 2)}`;
-    document.getElementById('luckyValue').innerHTML = `Lucky: ${formatValue(luckyValue, 2)}`;
+    document.getElementById('totalCpS').innerHTML = `Total CpS: ${formatValue(totalcps, 3, false, true, true)}`;
+    document.getElementById('globalBoost').innerHTML = `Multiplier: ${formatValue(globalBoost, 2,false, false, true)}`;
+    document.getElementById('luckyValue').innerHTML = `Lucky: ${formatValue(luckyValue, 1, false, false, true)}`;
     // get all radials with name lucky
     let luckyRadials = document.getElementsByName('lucky');
     // loop through all radials
@@ -483,6 +516,12 @@ function Display() {
     }
 
     document.getElementById('heralds').placeholder = gameState.prodBoosts.heralds ? gameState.prodBoosts.heralds : 'Heralds';
+
+    // loop through efficiencies array and place the buildings name in id="best-buy-1" through id="best-buy-5". stop after 5.
+    for (let i = 0; i < 5; i++) {
+        document.getElementById(`best-buy-${i+1}`).innerHTML = `${i+1}: ${efficiencies[i].name}`;
+    }
+    
 }
 
 function addEventListeners() {
@@ -636,7 +675,7 @@ function BuildingsEvent() {
                         } else if (inputElement === doublesInput) {
                             gameState.buildings[buildingKey].doubles = parseInt(inputElement.value, 10);
                         } else if (inputElement === upgradeInput) {
-                            gameState.buildings[buildingKey].upgradeCost = parseInt(inputElement.value, 10);
+                            gameState.buildings[buildingKey].upgradeCost = parseValue(inputElement.value, 10);
                             inputElement.value = '';
                         }
 
@@ -676,7 +715,7 @@ function BuildingsEvent() {
                     // Check for 'Enter' key
                     if (event.key === 'Enter') {
                         // Update gameState
-                        gameState.buildings[buildingKey].upgradeGrandmaCost = parseInt(grandmaGrandmaUpgradeInput.value, 10);
+                        gameState.buildings[buildingKey].upgradeGrandmaCost = parseValue(grandmaGrandmaUpgradeInput.value, 10);
                         grandmaGrandmaUpgradeInput.value = '';
 
                         // Save to local storage
@@ -782,45 +821,78 @@ function KittenEvent() {
     });
 }
 
-function formatValue(num, decimals = 2, isCost = false, isBuyNumber = false, roundUp = false) {
+function formatValue(num, decimals = 2, isBuyNumber = false, isCps = false, roundUp = false) {
     let factor = Math.pow(10, decimals);
     if (roundUp) {
         num = Math.ceil(num * factor) / factor;
     } else if (isBuyNumber) {
         num = Math.floor(num);
-    } else if (isCost) {
-        num = Math.ceil(num);
     } else {
         num = Math.floor(num * factor) / factor;
     }
 
+    let suffix = '';
+    let divisor = 1;
+    let precision = decimals;
+
     if (num >= 1e24) {
-        return (num / 1e24).toFixed(decimals) + 'Spt';
-    }
-    if (num >= 1e21) {
-        return (num / 1e21).toFixed(decimals) + 'Sx';
-    }
-    if (num >= 1e18) {
-        return (num / 1e18).toFixed(decimals) + 'Qt';
-    }
-    if (num >= 1e15) {
-        return (num / 1e15).toFixed(decimals) + 'Qd';
-    }
-    if (num >= 1e12) {
-        return (num / 1e12).toFixed(decimals) + 'T';
-    }
-    if (num >= 1e9) {
-        return (num / 1e9).toFixed(decimals) + 'B';
-    }
-    if (num >= 1e6) {
-        return (num / 1e6).toFixed(decimals) + 'M';
-    }
-    if (num >= 1e3) {
-        return (num / 1e3).toFixed(decimals) + 'K';
+        suffix = 'Spt';
+        divisor = 1e24;
+    } else if (num >= 1e21) {
+        suffix = 'Sx';
+        divisor = 1e21;
+    } else if (num >= 1e18) {
+        suffix = 'Qt';
+        divisor = 1e18;
+    } else if (num >= 1e15) {
+        suffix = 'Qd';
+        divisor = 1e15;
+    } else if (num >= 1e12) {
+        suffix = 'T';
+        divisor = 1e12;
+    } else if (num >= 1e9) {
+        suffix = 'B';
+        divisor = 1e9;
+    } else if (num >= 1e6) {
+        suffix = 'M';
+        divisor = 1e6;
+    } else if (num >= 1e3) {
+        suffix = 'K';
+        divisor = 1e3;
+        precision = 3; // Set precision to 3 for numbers over 1K
+    } else if (isCps) {
+        precision = 1; // Set precision to 1 for numbers under 1K when isCps is true
     }
 
-    return num.toFixed(isCost || isBuyNumber ? 0 : decimals);
+    return (num / divisor).toFixed(precision) + suffix;
 }
+
+function parseValue(input) {
+    const units = {
+        'k': 1e3,
+        'm': 1e6,
+        'b': 1e9,
+        't': 1e12,
+        'qd': 1e15,
+        'qt': 1e18,
+        'sx': 1e21,
+        'spt': 1e24,
+    };
+    
+    const regex = /\s*(\d+\.?\d*)\s*([a-z]+)?/i;
+    const parts = regex.exec(input);
+
+    if (parts) {
+        const numberPart = parseFloat(parts[1]);
+        const unitPart = parts[2] ? parts[2].toLowerCase() : '';
+        const multiplier = units[unitPart] || 1;
+        return numberPart * multiplier;
+    }
+
+    return NaN;
+}
+
+
 
 
 
@@ -835,6 +907,7 @@ function GoActionGo() {
     portalTotal = 0;
     nonCursorBuildingTotal = 0;
     luckyValue = 0;
+    efficiencies = [];
 
     CalcGlobalBoost();
     AdjustBuildings();
