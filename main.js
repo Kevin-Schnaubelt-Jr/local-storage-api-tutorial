@@ -26,7 +26,7 @@ let gameState = JSON.parse(localStorage.getItem('gameState')) || {
             "overseers": [false, 0.175],
         },
         prestige: {
-            prestigeNumber: 408,
+            prestigeNumber: 0,
             prestigeUpgrade: 0.05,
         }
     },
@@ -393,7 +393,7 @@ function Display() {
             document.getElementById(`${building.name.toLowerCase()}GrandmaBoost`).checked = building.grandmaBoosted;
         }
         document.getElementById(`${building.name.toLowerCase()}Doubles`).value = building.doubles;
-        document.getElementById(`${building.name.toLowerCase()}Cost`).innerHTML = formatValue(building.totalCost, 1, true);
+        document.getElementById(`${building.name.toLowerCase()}Cost`).innerHTML = formatValue(building.totalCost, 0, true);
         document.getElementById(`${building.name.toLowerCase()}CpS`).innerHTML = formatValue(building.cps, 1);
         document.getElementById(`${building.name.toLowerCase()}Buy`).innerHTML = formatValue(building.buyEfficiency, 2, true);
         document.getElementById(`${building.name.toLowerCase()}Upgrade`).placeholder = building.upgradeEfficiency ? formatValue(building.upgradeEfficiency, 2) : 'Upgrade';
