@@ -232,6 +232,7 @@ let luckyValue = 0;
 
 window.onload = function() {
     GoActionGo();
+    addEventListeners();
     // Other onload tasks...
     console.log("adjusted", adjustedBuildings);
     console.log("gamestate", gameState);
@@ -778,7 +779,6 @@ function GoActionGo() {
     CalculateBuyEfficiency();
     CalculateProdUpgradeEfficiency();
     Display();
-    addEventListeners();
 }
 
 function clearStorage() {
