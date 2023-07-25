@@ -24,6 +24,7 @@ let gameState = JSON.parse(localStorage.getItem('gameState')) || {
             "workers": [false, 0.125],
             "engineers": [false, 0.15],
             "overseers": [false, 0.175],
+            "managers": [false, 0.2],
         },
         prestige: {
             prestigeNumber: 0,
@@ -264,12 +265,13 @@ function CalcGlobalBoost() {
     let worker = gameState.prodBoosts.kittens.workers[0] ? gameState.prodBoosts.kittens.workers[1] : 0;
     let engineer = gameState.prodBoosts.kittens.engineers[0] ? gameState.prodBoosts.kittens.engineers[1] : 0;
     let overseer = gameState.prodBoosts.kittens.overseers[0] ? gameState.prodBoosts.kittens.overseers[1] : 0;
+    let managers = gameState.prodBoosts.kittens.managers[0] ? gameState.prodBoosts.kittens.managers[1] : 0;
 
     let prestigeNumber = gameState.prodBoosts.prestige.prestigeNumber;
     let prestigeUpgrade = gameState.prodBoosts.prestige.prestigeUpgrade;
     let prestigeBoost = prestigeNumber ? 1 + 0.01 * prestigeNumber * prestigeUpgrade : 1;
 
-    let kittenBoost = (helper ? 1 + milk * helper: 1) * (worker ? 1 + milk * worker: 1) * (engineer ? 1 + milk * engineer: 1) * (overseer ? 1 + milk * overseer: 1);
+    let kittenBoost = (helper ? 1 + milk * helper: 1) * (worker ? 1 + milk * worker: 1) * (engineer ? 1 + milk * engineer: 1) * (overseer ? 1 + milk * overseer: 1) * (managers ? 1 + milk * managers: 1);
 
     let heralds = 1 + 0.01 * gameState.prodBoosts.heralds;
 
@@ -762,7 +764,7 @@ function prodUpgradeEvent() {
 }
 
 function KittenEvent() {
-    let kittenTypes = ['helpers', 'workers', 'engineers', 'overseers'];
+    let kittenTypes = ['helpers', 'workers', 'engineers', 'overseers', 'managers'];
     kittenTypes.forEach(kittenType => {
         let kittenInput = document.getElementById(`kitten-${kittenType}`);
         if (kittenInput) {
