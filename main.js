@@ -28,7 +28,8 @@ let gameState = JSON.parse(localStorage.getItem('gameState')) || {
         prestige: {
             prestigeNumber: 0,
             prestigeUpgrade: 0.05,
-        }
+        },
+        heralds: 0,
     },
     lucky: 6000,
     buildings: {
@@ -262,7 +263,9 @@ function CalcGlobalBoost() {
 
     let kittenBoost = (helper ? 1 + milk * helper: 1) * (worker ? 1 + milk * worker: 1) * (engineer ? 1 + milk * engineer: 1) * (overseer ? 1 + milk * overseer: 1);
 
-    globalBoost = flavors * kittenBoost * prestigeBoost;
+    let heralds = 1 + 0.01 * gameState.prodBoosts.heralds;
+
+    globalBoost = flavors * kittenBoost * prestigeBoost * heralds;
 
     grandmaTotal = gameState.buildings.Grandma.amount;
     for (let building in gameState.buildings) {
@@ -417,12 +420,12 @@ function Display() {
     }
 
     document.getElementById('milkInput').placeholder = gameState.prodBoosts.milk ? gameState.prodBoosts.milk : 'Milk';
-    document.getElementById('input1').value = gameState.prodBoosts.flavors["1%"] ? gameState.prodBoosts.flavors["1%"] : '1%';
-    document.getElementById('input2').value = gameState.prodBoosts.flavors["2%"] ? gameState.prodBoosts.flavors["2%"] : '2%';
-    document.getElementById('input3').value = gameState.prodBoosts.flavors["3%"] ? gameState.prodBoosts.flavors["3%"] : '3%';
-    document.getElementById('input4').value = gameState.prodBoosts.flavors["4%"] ? gameState.prodBoosts.flavors["4%"] : '4%';
-    document.getElementById('input5').value = gameState.prodBoosts.flavors["5%"] ? gameState.prodBoosts.flavors["5%"] : '5%';
-    document.getElementById('input10').value = gameState.prodBoosts.flavors["10%"] ? gameState.prodBoosts.flavors["10%"] : '10%';
+    document.getElementById('input1').value = gameState.prodBoosts.flavors["1%"] ? gameState.prodBoosts.flavors["1%"] : '';
+    document.getElementById('input2').value = gameState.prodBoosts.flavors["2%"] ? gameState.prodBoosts.flavors["2%"] : '';
+    document.getElementById('input3').value = gameState.prodBoosts.flavors["3%"] ? gameState.prodBoosts.flavors["3%"] : '';
+    document.getElementById('input4').value = gameState.prodBoosts.flavors["4%"] ? gameState.prodBoosts.flavors["4%"] : '';
+    document.getElementById('input5').value = gameState.prodBoosts.flavors["5%"] ? gameState.prodBoosts.flavors["5%"] : '';
+    document.getElementById('input10').value = gameState.prodBoosts.flavors["10%"] ? gameState.prodBoosts.flavors["10%"] : '';
 
     document.getElementById('prodUpgrade').placeholder = gameState.prodBoosts.prodUpgrade.upgradeCost ? formatValue(prodUpgradeEfficiency) : 'Upgrade';
     for(let flavor in gameState.prodBoosts.prodUpgrade.upgradePercents){
@@ -452,6 +455,8 @@ function Display() {
             prestigeRadials[i].checked = true;
         }
     }
+
+    document.getElementById('heralds').placeholder = gameState.prodBoosts.heralds ? gameState.prodBoosts.heralds : 'Heralds';
 }
 
 function addEventListeners() {
@@ -460,7 +465,6 @@ function addEventListeners() {
 
     // For the finger
     FingerEvent();
-
 
     // For the milk
     MilkEvent();
@@ -474,16 +478,32 @@ function addEventListeners() {
     // For the lucky
     LuckyEvent();
 
-
     // For the kittens
     KittenEvent();
 
     // For the prestige
     PrestigeEvent();
 
-
+    // For the heralds
+    HeraldsEvent();
     
 }
+
+function HeraldsEvent() {
+    let heraldsInput = document.getElementById('heralds');
+    if (heraldsInput) {
+        heraldsInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                gameState.prodBoosts.heralds = parseInt(heraldsInput.value, 10);
+                localStorage.setItem('gameState', JSON.stringify(gameState));
+                heraldsInput.value = '';
+                GoActionGo();
+                event.target.blur();
+            }
+        });
+    }
+}
+
 
 function PrestigeEvent() {
     let prestigeNumberInput = document.getElementById('prestigeNumber');
